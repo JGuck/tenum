@@ -14,10 +14,6 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "docker"
-    directory: "/"
+    directory: "/clinpm"
     schedule:
       interval: "daily"
