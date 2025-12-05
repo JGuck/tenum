@@ -1,0 +1,245 @@
+name: Full CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
+
+jobs:
+  wrapper-validation:
+    name: Validate Gradle Wrapper
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate wrapper
+        uses: gradle/wrapper-validation-action@v3
+
+  lint-format:
+    name: Lint & Formatting
+    runs-on: ubuntu-latest
+    needs: wrapper-validation
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+      - name: Run ktlint
+        run: ./gradlew ktlintCheck --stacktrace --no-daemon
+
+  duplication:
+    name: Duplication
+    runs-on: ubuntu-latest
+    needs: lint-format
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+      - name: Run Kover
+        run: ./gradlew koverXmlReport --stacktrace --no-daemon
+
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    needs: lint-format
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+      - name: Run CPD
+        run: ./gradlew cpdCheck --stacktrace --no-daemon
+
+  build-test-JVM:
+    name: Build & Test (JVM)
+    runs-on: ubuntu-latest
+    needs: [lint-format, duplication, coverage]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+      - name: Build & Test JVM targets
+        run: |
+          ./gradlew :jvmTest --no-daemon
+
+  build-test-JS:
+    name: Build & Test (JS)
+    runs-on: ubuntu-latest
+    needs: [lint-format, duplication, coverage]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+      - name: Build & Test JS targets
+        run: |
+          ./gradlew :jsBrowserTest :jsNodeTest --no-daemon
+
+  build-test-linux:
+    name: Build & Test (Linux)
+    runs-on: ubuntu-latest
+    needs: [lint-format, duplication, coverage]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+      - name: Build JVM/JS/Linux targets
+        run: |
+          ./gradlew :linuxX64Test :linkReleaseExecutableLinuxX64 --no-daemon
+
+  build-test-windows:
+    name: Build & Test (Windows)
+    runs-on: windows-latest
+    needs: [lint-format, duplication, coverage]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build JVM/JS/Windows targets
+        shell: pwsh
+        run: |
+          ./gradlew.bat :mingwX64Test :linkReleaseExecutableMingwX64 --no-daemon
+
+  build-test-macos:
+    name: Build & Test (macOS)
+    runs-on: macos-latest
+    needs: [lint-format, duplication, coverage]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+      - name: Build JVM/JS/macOS targets
+        run: |
+          ./gradlew :macosX64Test \
+            :linkReleaseExecutableMacosX64 \
+            --no-daemon
+
+  build-test-macos-arm:
+    name: Build & Test (macOSv ARM)
+    runs-on: macos-latest
+    needs: [lint-format, duplication, coverage]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+      - name: Build JVM/JS/macOS targets
+        run: |
+          ./gradlew :macosArm64Test \
+            :linkReleaseExecutableMacosArm64 \
+            --no-daemon
+  installers:
+    name: Installer Build Check
+    needs:
+      - build-test-linux
+      - build-test-windows
+      - build-test-macos
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Installer build (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          chmod +x gradlew
+          sudo apt-get update
+          sudo apt-get install -y rpm ruby ruby-dev make gcc
+          gem install --no-document fpm
+          ./gradlew :cli:linkReleaseExecutableLinuxX64 --stacktrace --no-daemon
+          ./gradlew :cli:jsBrowserProductionLibraryDistribution --stacktrace --no-daemon
+          ./gradlew :cli:assemble --stacktrace --no-daemon
+
+      - name: Installer build (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          chmod +x gradlew
+          ./gradlew :cli:linkReleaseExecutableMacosX64 :cli:linkReleaseExecutableMacosArm64 --stacktrace --no-daemon
+          ./gradlew :cli:assemble --stacktrace --no-daemon
+
+      - name: Installer build (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          ./gradlew.bat :cli:linkReleaseExecutableMingwX64 --stacktrace --no-daemon
+          ./gradlew.bat :cli:assemble --stacktrace --no-daemon
