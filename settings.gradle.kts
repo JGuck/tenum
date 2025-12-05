@@ -7,6 +7,8 @@ pluginManagement {
     }
 }
 
+includeBuild("build-logic")
+
 include(
     ":cli",
     ":clinpm",
