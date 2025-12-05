@@ -52,26 +52,26 @@ jobs:
           mkdir -p "$BIN" "$STAGE/usr/local/bin"
           cp cli/build/bin/linuxX64/releaseExecutable/cli.kexe "$BIN/tenum"
           cat > "$BIN/tlua" <<'EOF'
-#!/usr/bin/env bash
-exec /usr/local/tenum/bin/tenum lua "$@"
-EOF
+          #!/usr/bin/env bash
+          exec /usr/local/tenum/bin/tenum lua "$@"
+          EOF
           cat > "$BIN/tluac" <<'EOF'
-#!/usr/bin/env bash
-exec /usr/local/tenum/bin/tenum luac "$@"
-EOF
+          #!/usr/bin/env bash
+          exec /usr/local/tenum/bin/tenum luac "$@"
+          EOF
           chmod +x "$BIN/tenum" "$BIN/tlua" "$BIN/tluac"
           cat > "$STAGE/usr/local/bin/tenum" <<'EOF'
-#!/usr/bin/env bash
-exec /usr/local/tenum/bin/tenum "$@"
-EOF
+          #!/usr/bin/env bash
+          exec /usr/local/tenum/bin/tenum "$@"
+          EOF
           cat > "$STAGE/usr/local/bin/tlua" <<'EOF'
-#!/usr/bin/env bash
-exec /usr/local/tenum/bin/tenum lua "$@"
-EOF
+          #!/usr/bin/env bash
+          exec /usr/local/tenum/bin/tenum lua "$@"
+          EOF
           cat > "$STAGE/usr/local/bin/tluac" <<'EOF'
-#!/usr/bin/env bash
-exec /usr/local/tenum/bin/tenum luac "$@"
-EOF
+          #!/usr/bin/env bash
+          exec /usr/local/tenum/bin/tenum luac "$@"
+          EOF
           chmod +x "$STAGE/usr/local/bin/"{tenum,tlua,tluac}
 
           TAR="tenum-linux-x64-${VERSION}.tar.gz"
@@ -167,26 +167,26 @@ EOF
           mkdir -p "$BIN" "$STAGE/usr/local/bin"
           cp "cli/build/bin/${{ matrix.target }}/releaseExecutable/cli.kexe" "$BIN/tenum"
           cat > "$BIN/tlua" <<'EOF'
-#!/bin/bash
-exec /usr/local/tenum/bin/tenum lua "$@"
-EOF
+          #!/bin/bash
+          exec /usr/local/tenum/bin/tenum lua "$@"
+          EOF
           cat > "$BIN/tluac" <<'EOF'
-#!/bin/bash
-exec /usr/local/tenum/bin/tenum luac "$@"
-EOF
+          #!/bin/bash
+          exec /usr/local/tenum/bin/tenum luac "$@"
+          EOF
           chmod +x "$BIN/tenum" "$BIN/tlua" "$BIN/tluac"
           cat > "$STAGE/usr/local/bin/tenum" <<'EOF'
-#!/bin/bash
-exec /usr/local/tenum/bin/tenum "$@"
-EOF
+          #!/bin/bash
+          exec /usr/local/tenum/bin/tenum "$@"
+          EOF
           cat > "$STAGE/usr/local/bin/tlua" <<'EOF'
-#!/bin/bash
-exec /usr/local/tenum/bin/tenum lua "$@"
-EOF
+          #!/bin/bash
+          exec /usr/local/tenum/bin/tenum lua "$@"
+          EOF
           cat > "$STAGE/usr/local/bin/tluac" <<'EOF'
-#!/bin/bash
-exec /usr/local/tenum/bin/tenum luac "$@"
-EOF
+          #!/bin/bash
+          exec /usr/local/tenum/bin/tenum luac "$@"
+          EOF
           chmod +x "$STAGE/usr/local/bin/"{tenum,tlua,tluac}
 
           PKG="tenum-${{ matrix.suffix }}-${VERSION}.pkg"
