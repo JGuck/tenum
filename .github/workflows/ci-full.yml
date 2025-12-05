@@ -199,6 +199,7 @@ jobs:
           ./gradlew macosArm64Test --no-daemon
   installers:
     name: Build Installers
+    if: false
     needs:
       - build-test-linux
       - build-test-windows
