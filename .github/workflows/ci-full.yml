@@ -10,6 +10,7 @@ on:
 env:
   GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
   PKG_VERSION: ${{ github.event.release.tag_name || github.ref_name }}
+  PKG_VERSION: ${{ github.event.release.tag_name || github.ref_name }}
 
 jobs:
   wrapper-validation:
@@ -268,13 +269,13 @@ jobs:
           DEB="tenum_${VERSION}_amd64.deb"
           fpm -s dir -t deb -n tenum -v "$VERSION" --license MIT --architecture amd64 \
             --description "Tenum CLI with lua/luac subcommands" \
-            --prefix / -C "$STAGE" usr
-          mv tenum_${VERSION}_amd64.deb "$DEB"
+            --prefix / -C "$STAGE" usr \
+            -p "$DEB"
           RPM="tenum-${VERSION}-1.x86_64.rpm"
           fpm -s dir -t rpm -n tenum -v "$VERSION" --iteration 1 --license MIT --architecture x86_64 \
             --description "Tenum CLI with lua/luac subcommands" \
-            --prefix / -C "$STAGE" usr
-          mv tenum-*.x86_64.rpm "$RPM"
+            --prefix / -C "$STAGE" usr \
+            -p "$RPM"
           echo "deb=$DEB" >> "$GITHUB_OUTPUT"
           echo "rpm=$RPM" >> "$GITHUB_OUTPUT"
           echo "tar=$TAR" >> "$GITHUB_OUTPUT"
