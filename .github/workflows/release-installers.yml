@@ -268,41 +268,41 @@ jobs:
           "@echo off`r`n""%~dp0tenum.exe"" luac %*`r`n" | Out-File "$Bin\\tluac.cmd" -Encoding ASCII
 
           $wxs = @"
-<?xml version='1.0' encoding='UTF-8'?>
-<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-  <Product Id='*' Name='Tenum' Language='1033' Version='$(var.ProductVersion)' Manufacturer='Tenum' UpgradeCode='C7B4B815-A3E2-4E10-A6DE-09F8C817C53E'>
-    <Package InstallerVersion='500' Compressed='yes' InstallScope='perMachine' />
-    <MajorUpgrade DowngradeErrorMessage='A newer version of Tenum is already installed.' />
-    <MediaTemplate />
-    <Directory Id='ProgramFilesFolder'>
-      <Directory Id='TENUMPARENT' Name='Tenum'>
-        <Directory Id='INSTALLFOLDER' Name='tenum'>
-          <Directory Id='BINDIR' Name='bin'>
-            <Component Id='cmpTenum' Guid='*'>
-              <File Id='filTenum' Source='$(var.SourceDir)\\tenum.exe' KeyPath='yes' />
-            </Component>
-            <Component Id='cmpTlua' Guid='*'>
-              <File Id='filTlua' Source='$(var.SourceDir)\\tlua.cmd' KeyPath='yes' />
-            </Component>
-            <Component Id='cmpTluac' Guid='*'>
-              <File Id='filTluac' Source='$(var.SourceDir)\\tluac.cmd' KeyPath='yes' />
-            </Component>
-            <Component Id='cmpPath' Guid='*'>
-              <Environment Id='PATH_TENUM' Name='PATH' Value='[BINDIR]' Action='set' System='yes' Part='last' Permanent='no' />
-            </Component>
-          </Directory>
-        </Directory>
-      </Directory>
-    </Directory>
-    <Feature Id='MainFeature' Title='Tenum' Level='1'>
-      <ComponentRef Id='cmpTenum' />
-      <ComponentRef Id='cmpTlua' />
-      <ComponentRef Id='cmpTluac' />
-      <ComponentRef Id='cmpPath' />
-    </Feature>
-  </Product>
-</Wix>
-"@
+          <?xml version='1.0' encoding='UTF-8'?>
+          <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+            <Product Id='*' Name='Tenum' Language='1033' Version='$(var.ProductVersion)' Manufacturer='Tenum' UpgradeCode='C7B4B815-A3E2-4E10-A6DE-09F8C817C53E'>
+              <Package InstallerVersion='500' Compressed='yes' InstallScope='perMachine' />
+              <MajorUpgrade DowngradeErrorMessage='A newer version of Tenum is already installed.' />
+              <MediaTemplate />
+              <Directory Id='ProgramFilesFolder'>
+                <Directory Id='TENUMPARENT' Name='Tenum'>
+                  <Directory Id='INSTALLFOLDER' Name='tenum'>
+                    <Directory Id='BINDIR' Name='bin'>
+                      <Component Id='cmpTenum' Guid='*'>
+                        <File Id='filTenum' Source='$(var.SourceDir)\\tenum.exe' KeyPath='yes' />
+                      </Component>
+                      <Component Id='cmpTlua' Guid='*'>
+                        <File Id='filTlua' Source='$(var.SourceDir)\\tlua.cmd' KeyPath='yes' />
+                      </Component>
+                      <Component Id='cmpTluac' Guid='*'>
+                        <File Id='filTluac' Source='$(var.SourceDir)\\tluac.cmd' KeyPath='yes' />
+                      </Component>
+                      <Component Id='cmpPath' Guid='*'>
+                        <Environment Id='PATH_TENUM' Name='PATH' Value='[BINDIR]' Action='set' System='yes' Part='last' Permanent='no' />
+                      </Component>
+                    </Directory>
+                  </Directory>
+                </Directory>
+              </Directory>
+              <Feature Id='MainFeature' Title='Tenum' Level='1'>
+                <ComponentRef Id='cmpTenum' />
+                <ComponentRef Id='cmpTlua' />
+                <ComponentRef Id='cmpTluac' />
+                <ComponentRef Id='cmpPath' />
+              </Feature>
+            </Product>
+          </Wix>
+          "@
           $wxsPath = Join-Path $Stage "tenum.wxs"
           Set-Content -Path $wxsPath -Value $wxs -Encoding UTF8
 
