@@ -10,6 +10,10 @@ plugins {
     base
 }
 
+repositories {
+    mavenCentral()
+}
+
 // We need the JS artifacts from :cli
 evaluationDependsOn(":cli")
 

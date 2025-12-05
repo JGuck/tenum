@@ -37,7 +37,10 @@ tasks.named<Cpd>("cpdCheck") {
 
     setSource(files(kotlinSourceDirs))
     include("**/*.kt")
-    exclude("**/build/**", "**/.gradle/**", "**/node_modules/**")
+    exclude("**/build/**", "**/.gradle/**", "**/node_modules/**", "**/generated/sources/buildConfig/**")
+
+    // BuildConfig sources for :cli are generated; ensure they are created before CPD runs
+    dependsOn(project(":cli").tasks.named("generateBuildConfig"))
 }
 
 kover {
