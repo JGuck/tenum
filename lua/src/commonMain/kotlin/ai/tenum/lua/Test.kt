@@ -1,4 +1,3 @@
 package ai.tenum.lua
 
-class Test {
-}
+class Test
