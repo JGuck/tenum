@@ -68,7 +68,7 @@ kotlin {
                 implementation(libs.appdirs)
                 implementation(libs.github.ajalt.clikt)
                 implementation(libs.okio)
-                implementation(libs.ktmath)
+                //implementation(libs.ktmath)
 
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.collections.immutable)
