@@ -135,7 +135,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Make gradlew executable
         run: chmod +x gradlew
-      - name: Build JVM/JS/Linux targets
+      - name: Build Linux targets
         run: |
           ./gradlew linuxX64Test linkReleaseExecutableLinuxX64 --no-daemon
 
@@ -153,7 +153,7 @@ jobs:
           java-version: 21
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-      - name: Build JVM/JS/Windows targets
+      - name: Build Windows targets
         shell: pwsh
         run: |
           ./gradlew.bat mingwX64Test linkReleaseExecutableMingwX64 --no-daemon
@@ -174,7 +174,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Make gradlew executable
         run: chmod +x gradlew
-      - name: Build JVM/JS/macOS targets
+      - name: Build macOS targets
         run: |
           ./gradlew macosX64Test linkReleaseExecutableMacosX64 --no-daemon
 
@@ -194,7 +194,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Make gradlew executable
         run: chmod +x gradlew
-      - name: Build JVM/JS/macOS targets
+      - name: Build macOS arm targets
         run: |
           ./gradlew macosArm64Test linkReleaseExecutableMacosArm64 --no-daemon
   installers:
@@ -231,6 +231,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y rpm ruby ruby-dev make gcc
+          export GEM_HOME="$HOME/.gem"
+          export GEM_PATH="$GEM_HOME:$GEM_PATH"
+          export PATH="$GEM_HOME/bin:$PATH"
           gem install --no-document fpm
           ./gradlew :cli:linkReleaseExecutableLinuxX64 --stacktrace --no-daemon
           VERSION="${PKG_VERSION#v}"
