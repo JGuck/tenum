@@ -137,7 +137,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build Linux targets
         run: |
-          ./gradlew linuxX64Test linkReleaseExecutableLinuxX64 --no-daemon
+          ./gradlew linuxX64Test --no-daemon
 
   build-test-windows:
     name: Build & Test (Windows)
@@ -156,7 +156,7 @@ jobs:
       - name: Build Windows targets
         shell: pwsh
         run: |
-          ./gradlew.bat mingwX64Test linkReleaseExecutableMingwX64 --no-daemon
+          ./gradlew.bat mingwX64Test --no-daemon
 
   build-test-macos:
     name: Build & Test (macOS)
@@ -176,7 +176,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build macOS targets
         run: |
-          ./gradlew macosX64Test linkReleaseExecutableMacosX64 --no-daemon
+          ./gradlew macosX64Test --no-daemon
 
   build-test-macos-arm:
     name: Build & Test (macOS ARM)
@@ -196,7 +196,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build macOS arm targets
         run: |
-          ./gradlew macosArm64Test linkReleaseExecutableMacosArm64 --no-daemon
+          ./gradlew macosArm64Test --no-daemon
   installers:
     name: Build Installers
     needs:
