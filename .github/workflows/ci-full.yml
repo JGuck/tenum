@@ -179,7 +179,7 @@ jobs:
           ./gradlew macosX64Test linkReleaseExecutableMacosX64 --no-daemon
 
   build-test-macos-arm:
-    name: Build & Test (macOSv ARM)
+    name: Build & Test (macOS ARM)
     runs-on: macos-latest
     needs: [lint-format, duplication, coverage]
     steps:

@@ -10,6 +10,7 @@ pluginManagement {
 includeBuild("build-logic")
 
 include(
+    ":lua",
     ":cli",
     ":clinpm",
 )
